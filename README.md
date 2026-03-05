@@ -1,362 +1,553 @@
-# Language Playground IDE
+# Coxy Plutus Playground
 
-### Web-Based Haskell & Plutus Smart Contract Development Environment
+### Developer Documentation & Project Specification
 
----
+An open development project to transform **Coxy Plutus Builder Studio (CPBS)** into a full **Plutus Smart Contract Playground**, similar to **Remix IDE** used in the Ethereum ecosystem.
 
-## 📌 Overview
+The playground will provide developers with a **web-based development environment** where they can write, edit, compile, and test **Plutus** smart contracts without installing complex local toolchains.
 
-The **Language Playground IDE** is a web-based Integrated Development Environment designed for functional programming and blockchain smart contract development. The platform focuses specifically on Haskell development using the **Glasgow Haskell Compiler (GHC)** and smart contract development using **Plutus** for the **Cardano** blockchain ecosystem.
+The system integrates the **Glasgow Haskell Compiler**, **Cabal**, and **Nix** to compile Plutus contracts inside a secure backend environment.
 
-This project eliminates complex local setup requirements and provides an accessible browser-based development, compilation, and smart contract testing environment.
-
----
-
-# 📑 Table of Contents
-
-1. [Project Motivation](#project-motivation)
-2. [Objectives](#objectives)
-3. [System Architecture](#system-architecture)
-4. [Compiler Integration](#compiler-integration)
-5. [Core Features](#core-features)
-6. [Functional Requirements](#functional-requirements)
-7. [Non-Functional Requirements](#non-functional-requirements)
-8. [Technical Stack](#technical-stack)
-9. [Smart Contract Support](#smart-contract-support)
-10. [Security Model](#security-model)
-11. [Installation & Setup](#installation--setup)
-12. [Project Structure](#project-structure)
-13. [Future Enhancements](#future-enhancements)
-14. [Contribution Guidelines](#contribution-guidelines)
-15. [License](#license)
+This README serves as a **technical specification and implementation guide for developers** contributing to the project.
 
 ---
 
-# 🎯 Project Motivation
+# Table of Contents
 
-Developers working with Haskell and Plutus often encounter:
-
-* Complex local installation of GHC, Cabal/Stack, and Plutus libraries
-* Configuration and dependency conflicts
-* Limited interactive smart contract simulation tools
-* High entry barrier for beginners in functional blockchain development
-
-This project addresses these issues by providing a centralized web-based environment that integrates compiler services and blockchain simulation tools.
-
----
-
-# 🎯 Objectives
-
-The primary goals of this project are:
-
-* Provide an online Haskell coding environment
-* Integrate GHC for real-time compilation
-* Support Plutus smart contract development
-* Enable smart contract validation simulation
-* Offer secure sandboxed execution
-* Provide structured templates for blockchain development
+1. Project Overview
+2. Key Features
+3. System Specifications
+4. System Requirements
+5. Compiler and Build Architecture
+6. Development Phases
+7. Workspace Structure Specification
+8. Backend Architecture
+9. Compile API Specification
+10. Job Management System
+11. Security and Sandboxing
+12. Caching Strategy
+13. Observability and Monitoring
+14. Frontend IDE Architecture
+15. Expected Outputs and Artifacts
+16. Contribution Guidelines
 
 ---
 
-# 🏗 System Architecture
+# 1. Project Overview
 
-The system follows a **client-server architecture** consisting of:
+One of the main limitations in the **Cardano smart contract ecosystem** is the lack of a beginner-friendly development environment comparable to **Remix IDE** used by Ethereum developers.
 
-## 1️⃣ Frontend Layer
+Developing **Plutus smart contracts** typically requires installing and configuring multiple tools such as:
 
-* Web-based IDE interface
-* Syntax-highlighted code editor
-* Compile and Run controls
-* Output console and error display
-* Smart contract testing panel
+* GHC
+* Cabal
+* Nix
+* Cardano development libraries
+* Plutus frameworks
 
-## 2️⃣ Backend Layer
+These requirements create a **significant barrier for beginners and students**.
 
-* GHC compilation service
-* Plutus contract compilation module
-* Sandboxed execution engine
-* REST API services
+To address this challenge, **Coxygen Global** developed **Coxy Plutus Builder Studio (CPBS)**, a tool that allows developers to generate Plutus validator templates using predefined smart contract structures.
 
-## 3️⃣ Execution Environment
+The objective of this project is to **upgrade CPBS into a full Plutus Playground**, allowing developers to:
 
-* Containerized sandbox
-* Resource-limited runtime
-* Isolated filesystem
-* Timeout enforcement
+* Open smart contract templates
+* Edit Plutus code
+* Compile contracts online
+* View compilation logs
+* Download compiled contract artifacts
 
 ---
 
-# ⚙️ Compiler Integration
+# 2. Key Features
 
-## Primary Compiler: GHC
+The Plutus Playground must provide the following major features.
 
-The system integrates the **Glasgow Haskell Compiler (GHC)** as the core compilation engine.
+### 2.1 Web-Based IDE
 
-### Why GHC?
+Developers must be able to write and edit Plutus contracts directly in a browser.
 
-* Official Haskell compiler
-* Required for Plutus development
-* Strong static typing and type inference
-* Optimized compilation pipeline
-* Compatible with Plutus Core generation
+Core IDE components include:
 
----
+* File explorer
+* Code editor
+* Tabbed file views
+* Compilation controls
+* Console output panel
 
-## Example Compilers (Context Only)
+The editor must support:
 
-The system focuses on GHC. Other compilers are mentioned for architectural comparison only:
-
-* `javac` (Java)
-* `clang` (C/C++)
-* `rustc` (Rust)
-
-These are not integrated into this project.
+* Haskell syntax highlighting
+* Error highlighting
+* Real-time editing
 
 ---
 
-# 🚀 Core Features
+### 2.2 Template-Based Smart Contract Development
 
-### ✨ Code Editor
+The playground must allow developers to start with predefined contract templates such as:
 
-* Syntax highlighting for Haskell
-* Auto-indentation
-* Line numbering
-* Basic auto-completion
-* Error diagnostics display
-* Template insertion for smart contracts
+* Vesting contracts
+* Parameterized vesting contracts
+* Marketplace validators
+* Auction validators
 
----
+Templates will come from the **CPBS library**.
 
-### 🧠 Compilation Features
+Each template contains:
 
-* Compile Haskell code using GHC
-* Type-checking before execution
-* Compile Plutus smart contracts
-* Clear compilation error reporting
-* Safe execution pipeline
+* Validator logic
+* Datum definitions
+* Redeemer definitions
+* Constraint rules
 
 ---
 
-### 🔐 Execution Sandbox
+### 2.3 Online Compilation
 
-* Containerized execution
-* CPU and memory limits
-* Execution timeout protection
-* No unrestricted OS access
-* No arbitrary shell command execution
+The system must compile smart contracts directly in the browser environment using a backend compilation service.
 
----
+Compilation must generate:
 
-# 📜 Smart Contract Support
-
-The IDE supports:
-
-* Validator script development
-* Multi-signature script templates
-* Transaction context simulation
-* Script success/failure evaluation
-* Fee estimation logic
-
-The system enables compilation targeting Plutus Core for deployment within the Cardano ecosystem.
+* `.plutus` compiled scripts
+* CBOR encoded scripts
+* Script hash values
+* Contract addresses when applicable
 
 ---
 
-# 📋 Functional Requirements
+### 2.4 Compilation Logs
 
-## Code Editing
+Developers must be able to view detailed compilation logs including:
 
-* Haskell syntax support
-* Real-time linting
-* Structured project templates
-* Output console
+* parser errors
+* typechecking errors
+* dependency build logs
+* build success messages
 
-## Compilation
-
-* GHC backend compilation
-* Plutus Core generation
-* Type-check validation
-* Error messaging system
-
-## Smart Contract Simulation
-
-* Mock transaction testing
-* Validator parameter input
-* Execution result display
+Logs must update in real time while compilation runs.
 
 ---
 
-# 🔒 Non-Functional Requirements
+### 2.5 Artifact Download
 
-## Security
+After successful compilation the system must allow users to download build artifacts including:
 
-* Sandboxed execution
-* API validation
-* Secure HTTPS communication
-* Restricted system access
-
-## Performance
-
-* Compilation under 5 seconds (small scripts)
-* Efficient container startup
-* Optimized memory usage
-
-## Scalability
-
-* Microservice architecture
-* Horizontal scaling support
-* Container orchestration compatibility
-
-## Reliability
-
-* Logging and monitoring
-* Fault tolerance
-* Automatic container recovery
+* compiled Plutus scripts
+* JSON artifact manifest
+* generated Haskell modules
+* CBOR encoded scripts
 
 ---
 
-# 🛠 Technical Stack
+### 2.6 Workspace Management
 
-## Frontend
+The IDE must support a structured project workspace similar to a local development project.
 
-* HTML5
-* CSS3
-* JavaScript / TypeScript
-* Monaco Editor (or equivalent)
+Developers must be able to:
 
-## Backend
+* create files
+* edit files
+* upload workspace archives
+* download full workspaces
 
-* Node.js server or Haskell backend
-* GHC compiler service
+---
+
+# 3. System Specifications
+
+The system consists of four major subsystems.
+
+### Frontend IDE
+
+Browser-based development interface.
+
+Responsibilities:
+
+* code editing
+* file navigation
+* triggering compilation
+* displaying logs
+
+---
+
+### Backend Compiler Service
+
+Server-side service responsible for compiling Plutus contracts.
+
+Responsibilities:
+
+* executing compilation commands
+* managing build environments
+* returning compiled artifacts
+
+---
+
+### Containerized Build Environment
+
+Each compilation must run inside a container to guarantee consistent builds.
+
+Responsibilities:
+
+* providing deterministic build environments
+* isolating builds for security
+* preventing resource abuse
+
+---
+
+### Job Orchestration System
+
+Manages compilation jobs.
+
+Responsibilities:
+
+* queue management
+* concurrency limits
+* runtime limits
+* job status tracking
+
+---
+
+# 4. System Requirements
+
+The backend compilation system requires the following development tools.
+
+### Core Development Tools
+
+* **Glasgow Haskell Compiler**
+* **Cabal**
+* **Nix**
+
+These tools are required to compile Plutus contracts and manage Haskell dependencies.
+
+---
+
+### Container Technology
+
+Compilation must run inside containers built using:
+
+* Docker
+
+Containers guarantee that all developers use identical environments.
+
+---
+
+### Development Environment
+
+The project uses a Nix development shell that pins:
+
+* compiler versions
+* package versions
+* build dependencies
+
+This ensures deterministic builds.
+
+---
+
+# 5. Compiler and Build Architecture
+
+The compilation pipeline consists of several phases similar to traditional compiler architecture.
+
+### Phase 1 — Source Code Input
+
+Developers write or modify Plutus smart contract source files in the IDE.
+
+These files are stored in the workspace.
+
+---
+
+### Phase 2 — Lexical Analysis
+
+The compiler scans source code and converts characters into tokens.
+
+Tokens include:
+
+* keywords
+* identifiers
+* operators
+* constants
+
+Example:
+
+```
+int x = 10;
+```
+
+Tokens:
+
+```
+int
+x
+=
+10
+;
+```
+
+---
+
+### Phase 3 — Syntax Analysis
+
+The compiler checks whether tokens follow valid language grammar.
+
+Invalid syntax results in parser errors.
+
+---
+
+### Phase 4 — Semantic Analysis
+
+The compiler verifies logical correctness.
+
+Checks include:
+
+* type compatibility
+* variable declarations
+* valid operations
+
+---
+
+### Phase 5 — Intermediate Code Generation
+
+The compiler converts source code into intermediate representations before generating machine code.
+
+Intermediate code allows optimization and platform independence.
+
+---
+
+### Phase 6 — Code Optimization
+
+The compiler optimizes the code to improve performance.
+
+Examples include:
+
+* removing unused code
+* simplifying constant expressions
+* improving loops
+
+---
+
+### Phase 7 — Code Generation
+
+The final compilation step produces executable artifacts such as:
+
+* `.plutus` contract scripts
+* CBOR encoded scripts
+
+---
+
+# 6. Development Phases
+
+Developers must follow the phases below to implement the playground.
+
+---
+
+# Phase 1 — Product Definition and UX Flow
+
+The user workflow must be clearly defined.
+
+The expected workflow is:
+
+1. user opens a template
+2. user edits the contract
+3. user clicks compile
+4. logs appear in console
+5. compiled artifacts are produced
+6. user downloads outputs
+
+Each compile target must map to specific build commands.
+
+---
+
+# Phase 2 — Workspace Layout Definition
+
+A standard project workspace format must be defined.
+
+Workspace must include:
+
+```
+workspace/
+ ├── src/
+ ├── validators/
+ ├── plutus.json
+ ├── cabal.project
+ └── README.md
+```
+
+Templates must exist for:
+
+* Vesting
+* Parameterized Vesting
+
+---
+
+# Phase 3 — CLI Compiler Runner
+
+A command line tool must be implemented.
+
+Example command:
+
+```
+plutus-playground compile <module>
+```
+
+The CLI must:
+
+* compile modules
+* produce artifacts
+* generate build logs
+
+---
+
+# Phase 4 — Containerized Build System
+
+A Docker image must be created containing:
+
+* Nix
+* GHC
+* Cabal
 * Plutus libraries
-* REST API
 
-## Infrastructure
-
-* Linux server
-* Docker containerization
-* Reverse proxy (e.g., Nginx)
-* CI/CD pipeline
+The image must be able to compile example contracts.
 
 ---
 
-# 🧩 Project Structure
+# Phase 5 — Compile API
+
+The backend must expose HTTP endpoints.
+
+Example:
 
 ```
-language-playground-ide/
-│
-├── frontend/
-│   ├── src/
-│   ├── components/
-│   └── public/
-│
-├── backend/
-│   ├── compiler-service/
-│   ├── sandbox/
-│   └── api/
-│
-├── contracts/
-│   ├── validator-templates/
-│   └── multisig-examples/
-│
-├── docker/
-│   └── Dockerfile
-│
-└── README.md
+POST /compile
+GET /health
+GET /version
+```
+
+The `/compile` endpoint must:
+
+* accept workspace upload
+* start compilation job
+* return logs
+* return artifact bundle
+
+---
+
+# Phase 6 — Job Orchestration
+
+Compilation jobs must be controlled by a queue system.
+
+Features include:
+
+* concurrency limits
+* job timeout limits
+* automatic cleanup
+
+Job states must include:
+
+* queued
+* running
+* succeeded
+* failed
+
+---
+
+# Phase 7 — Build Caching
+
+The system must implement caching to reduce build times.
+
+Possible methods include:
+
+* Nix binary cache
+* prebuilt dependency layers
+
+The system must track:
+
+* cache hits
+* cache misses
+
+---
+
+# Phase 8 — Security and Sandboxing
+
+Compilation jobs must run in restricted environments.
+
+Security rules include:
+
+* non-root execution
+* CPU limits
+* memory limits
+* network restrictions
+
+Additional protections:
+
+* upload size limits
+* request rate limits
+
+---
+
+# Phase 9 — Frontend IDE Development
+
+The final phase implements the web-based IDE.
+
+Required components include:
+
+* file explorer
+* code editor
+* compile button
+* compilation logs panel
+
+Users must see compilation states:
+
+* queued
+* running
+* success
+* failure
+
+---
+
+# 7. Expected Outputs
+
+Successful compilation must produce the following outputs.
+
+### Script Artifacts
+
+```
+contract.plutus
+contract.cbor
+artifact.json
 ```
 
 ---
 
-# 💻 Installation & Setup
+### Artifact Manifest
 
-## Prerequisites
+Example manifest:
 
-* Linux environment
-* Docker installed
-* GHC installed
-* Node.js (if using Node backend)
-
----
-
-## Clone Repository
-
-```bash
-git clone https://github.com/yourusername/language-playground-ide.git
-cd language-playground-ide
+```
+{
+ "scriptHash": "...",
+ "address": "...",
+ "compiledScript": "contract.plutus"
+}
 ```
 
 ---
 
-## Run Backend
+# 8. Contribution Guidelines
 
-```bash
-cd backend
-npm install
-npm start
-```
+Developers contributing to the project should:
 
----
-
-## Run Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
+1. follow the workspace structure
+2. ensure builds run in the Nix environment
+3. test compile targets before submission
+4. document new features
+5. maintain deterministic builds
 
 ---
 
-## Using Docker (Recommended)
+# 9. Project Goal
 
-```bash
-docker build -t language-playground .
-docker run -p 3000:3000 language-playground
-```
+The final objective is to deliver a **fully functional Plutus smart contract playground** that enables developers to prototype and test contracts directly in the browser.
 
----
-
-# 🔮 Future Enhancements
-
-* User authentication system
-* Project saving and cloud storage
-* Blockchain testnet integration
-* Gas/fee analytics dashboard
-* Advanced auto-completion
-* CI integration for smart contracts
-* Additional blockchain support
-
----
-
-# 🤝 Contribution Guidelines
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit changes with descriptive messages
-4. Submit a pull request
-5. Ensure code follows project structure and security guidelines
-
----
-
-# 📚 Research Context
-
-This project supports:
-
-* Functional programming education
-* Blockchain research
-* Smart contract experimentation
-* Academic study of compiler integration in web-based IDE systems
-
----
-
-# 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-# 🌍 Conclusion
-
-The Language Playground IDE provides a secure, scalable, and academically grounded platform for Haskell and Plutus smart contract development. By integrating GHC and supporting smart contract simulation, the system reduces entry barriers while maintaining technical rigor and compiler-level integrity.
+This will significantly improve accessibility and productivity for **Cardano smart contract developers**.
 
 ---
 
