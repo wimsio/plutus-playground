@@ -1,0 +1,10 @@
+{
+  "name": "@ide/plugin-compiler",
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@ide/plugin-sdk": "workspace:*",
+    "react": "^18.3.1"
+  },
+  "main": "src/index.tsx"
+}

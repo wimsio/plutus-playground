@@ -1,0 +1,40 @@
+cabal-version:      3.0
+name:               haskell-starter-onchain
+version:            0.1.0.0
+build-type:         Simple
+
+common shared
+  default-language: GHC2021
+  ghc-options:      -Wall
+  hs-source-dirs:   src
+  build-depends:
+      base >=4.14 && <5
+
+library
+  import:           shared
+  exposed-modules:  Contract
+
+executable export-validator
+  default-language: GHC2021
+  main-is:          export-validator.hs
+  hs-source-dirs:   app, src
+  build-depends:
+      base >=4.14 && <5,
+      haskell-starter-onchain
+
+executable export-policy
+  default-language: GHC2021
+  main-is:          export-policy.hs
+  hs-source-dirs:   app, src
+  build-depends:
+      base >=4.14 && <5,
+      haskell-starter-onchain
+
+test-suite onchain-tests
+  default-language: GHC2021
+  type:             exitcode-stdio-1.0
+  main-is:          Spec.hs
+  hs-source-dirs:   test, src
+  build-depends:
+      base >=4.14 && <5,
+      haskell-starter-onchain
