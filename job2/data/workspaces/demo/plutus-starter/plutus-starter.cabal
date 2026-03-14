@@ -1,0 +1,31 @@
+cabal-version:      3.0
+name:               plutus-starter
+version:            0.1.0.0
+build-type:         Simple
+
+common shared
+  default-language: GHC2021
+  ghc-options:      -Wall
+  hs-source-dirs:   src
+  build-depends:
+      base >=4.14 && <5
+
+library
+  import:           shared
+  exposed-modules:  Validator
+
+executable export-validator
+  default-language: GHC2021
+  main-is:          export-validator.hs
+  hs-source-dirs:   app, src
+  build-depends:
+      base >=4.14 && <5,
+      plutus-starter
+
+executable export-policy
+  default-language: GHC2021
+  main-is:          export-policy.hs
+  hs-source-dirs:   app, src
+  build-depends:
+      base >=4.14 && <5,
+      plutus-starter

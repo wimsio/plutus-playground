@@ -1,0 +1,5 @@
+spending starter
+
+func main(_, _, _) -> Bool {
+  true
+}

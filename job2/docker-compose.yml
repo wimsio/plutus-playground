@@ -1,0 +1,51 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    volumes:
+      - redis-data:/data
+
+  redis-ui:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+
+  haskell-api:
+    build: ./apps/haskell-api
+    environment:
+      - REDIS_HOST=redis
+      - WORKSPACE_ROOT=/data/workspaces
+      - ALLOWED_ORIGINS=http://127.0.0.1:5173,http://localhost:5173,http://127.0.0.1:5174,http://localhost:5174,http://127.0.0.1:5175,http://localhost:5175
+    volumes:
+      - ./data/workspaces:/data/workspaces
+    ports: ["8080:8080"]
+    depends_on: [redis]
+
+  compiler-worker:
+    build: ./apps/compiler-worker
+    environment:
+      - REDIS_HOST=redis
+      - WORKSPACE_ROOT=/data/workspaces
+      - DEFAULT_PROJECT=demo
+      - COMPILE_CMD=bash -lc "cd /data/workspaces/demo && cabal build 2>&1"
+    volumes:
+      - ./data/workspaces:/data/workspaces
+    depends_on: [redis]
+
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports: ["5173:5173"]
+    environment:
+      - NODE_OPTIONS=--dns-result-order=ipv4first
+    command: sh -lc "npm i -g pnpm@9 && pnpm i && pnpm -C apps/shell-frontend dev --host 0.0.0.0"
+    depends_on: [haskell-api]
+
+volumes:
+  redis-data:
