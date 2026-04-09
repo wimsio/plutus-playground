@@ -1,0 +1,6 @@
+// Midnight Compact starter
+// Replace this placeholder with your Compact contract.
+
+export circuit main(): [] {
+  return [];
+}
